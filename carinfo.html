@@ -5,6 +5,11 @@
 </head>
 <body>
 <h1>Car Info</h1>
+
+<button id="submitBtn">Add Part/Service</button>
+
+<div id="inputFields"></div>
+
 <div id="car-info"></div>
 
 <script>
@@ -27,6 +32,36 @@
           .catch(function(error) {
             console.log(error);
           });
+
+
+  // Add event listener to button
+  document.getElementById("submitBtn").addEventListener("click", function() {
+    // Create two new input fields
+    var partname = document.createElement("input");
+    partname.type = "text";
+    partname.name = "partname";
+    partname.placeholder = "Enter Part/Service name";
+
+    var daysno = document.createElement("input");
+    daysno.type = "number";
+    daysno.name = "daysno";
+    daysno.placeholder = "Enter days to remind";
+
+    // Add input fields to the DOM
+    document.getElementById("inputFields").appendChild(partname);
+    document.getElementById("inputFields").appendChild(daysno);
+
+    // Send data to PHP page using XMLHttpRequest
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "save-part.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+      if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        console.log(this.responseText);
+      }
+    };
+    xhr.send("partname=" + partname.value + "&daysno=" + daysno.value);
+  });
 </script>
 </body>
 </html>
