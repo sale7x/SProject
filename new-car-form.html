@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Car Form</h1>
+
+<form id="car-form">
+  <label for="carname">Car Name:</label>
+  <input type="text" id="carname" name="carname"><br><br>
+
+  <label for="carmodel">Car Model:</label>
+  <input type="text" id="carmodel" name="carmodel"><br><br>
+
+
+  <input type="submit" value="Save">
+</form>
+
+<script>
+
+  const form = document.getElementById("car-form");
+
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+  const formData = new FormData(form);
+
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "insert.php");
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 200) {
+        alert(xhr.responseText);
+      } else {
+        alert("There was a problem with the request.");
+      }
+    }
+  };
+
+  xhr.send(formData);
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Catalog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Styles for card view */
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+            font-family: arial;
+            padding: 10px;
+            background-color: #f7f7f7;
+        }
+
+        .card button {
+            border: none;
+            outline: 0;
+            padding: 12px;
+            color: white;
+            background-color: #e74c3c;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+        }
+
+        .card button:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="window.location.href='new-car-form.html'">Add New Car</button>
+
+<h1>Car Catalog</h1>
+<div id="car-cards"></div>
+
+<script>
+
+
+    // Function to create a card element for a car record
+    function createCarCard(car) {
+        var card = document.createElement('div');
+        card.className = 'card';
+
+        var name = document.createElement('h2');
+        name.textContent = car.carname;
+        card.appendChild(name);
+
+        var model = document.createElement('p');
+        model.textContent = car.carmodel;
+        card.appendChild(model);
+
+
+
+        var detailsBtn = document.createElement('button');
+        detailsBtn.textContent = 'Details';
+        detailsBtn.onclick = function() {
+            // Navigate to the car details page with the car id as a parameter
+            window.location.href = 'carinfo.html?id=' + car.id;
+        };
+        card.appendChild(detailsBtn);
+
+        var deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = function() {
+            deleteCar(car.id);
+        };
+        card.appendChild(deleteBtn);
+
+        return card;
+    }
+
+    // Function to retrieve car data from the server and display it in the card view
+    function loadCars() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'get_cars.php');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var cars = JSON.parse(xhr.responseText);
+                var carCards = document.getElementById('car-cards');
+                carCards.innerHTML = '';
+                for (var i = 0; i < cars.length; i++) {
+                    var carCard = createCarCard(cars[i]);
+                    carCards.appendChild(carCard);
+                }
+            } else {
+                console.log('Error loading car data. Status code: ' + xhr.status);
+            }
+        };
+        xhr.send();
+    }
+
+    // Function to delete a car record from the database
+    function deleteCar(carId) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'delete_car.php');
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                loadCars();
+            } else {
+                console.log('Error deleting car. Status code: ' + xhr.status);
+            }
+        };
+        xhr.send('id=' + encodeURIComponent(carId));
+    }
+
+    // Load car data when page is first loaded
+    loadCars();
+</script>
+</body>
+</html>

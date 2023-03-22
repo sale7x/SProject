@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Car Info</title>
+</head>
+<body>
+<h1>Car Info</h1>
+<div id="car-info"></div>
+
+<script>
+  // Get the car id from the URL parameter
+  var urlParams = new URLSearchParams(window.location.search);
+  var carId = urlParams.get('id');
+
+  // Call an API endpoint to get the car details by id
+  fetch('get-car-byID.php?id=' + carId)
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(car) {
+            // Display the car details
+            var carDetails = document.getElementById('car-info');
+            carDetails.innerHTML = '<h2>' + car.carname + '</h2>' +
+                    '<p>Model: ' + car.carmodel + '</p>' ;
+
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+</script>
+</body>
+</html>
