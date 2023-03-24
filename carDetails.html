@@ -4,48 +4,113 @@
     <title>Car Catalog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Styles for card view */
-        .card {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            max-width: 300px;
-            margin: auto;
-            text-align: center;
-            font-family: arial;
+        /* Define the grid layout */
+        body {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas:
+        "header"
+        "main"
+        "footer";
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Style the header section */
+        header {
+            grid-area: header;
+            background-color: #333;
+            color: #fff;
             padding: 10px;
-            background-color: #f7f7f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .card button {
-            border: none;
-            outline: 0;
-            padding: 12px;
-            color: white;
-            background-color: #e74c3c;
+        /* Style the main section */
+        main {
+            grid-area: main;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 20px;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        /* Style the car details section */
+
+
+        /* Style the parts list section */
+        #car-cards{
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        /* Style the footer section */
+        footer {
+            grid-area: footer;
+            background-color: #eee;
+            padding: 10px;
             text-align: center;
-            cursor: pointer;
-            width: 100%;
-            font-size: 18px;
         }
 
-        .card button:hover {
-            opacity: 0.7;
+        /* Style the buttons */
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
         }
+
+        /* Show the submit button when there are input fields */
         #submitButton {
             display: none;
         }
 
+        /* Media queries for responsive design */
+        @media screen and (max-width: 768px) {
+            body {
+                grid-template-areas:
+          "header"
+          "main"
+          "footer";
+            }
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            main {
+                grid-gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
+<header>
 
+    <h1>Car List</h1>
+</header>
+
+<main>
 <button id="addcarbutton">Add New Car</button>
 <div id="inputcarFields"></div>
 <button id="submitButton">Submit</button>
 
-<h1>Car Catalog</h1>
+
 <div id="car-cards"></div>
 
+</main>
 
+<footer>
+    &copy; 2023 Car List
+</footer>
 
 <script>
 
@@ -125,7 +190,7 @@
         var deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
         deleteBtn.onclick = function() {
-            deleteCar(car.id);
+            deleteCar(String(car.id));
         };
         card.appendChild(deleteBtn);
 
