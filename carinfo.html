@@ -6,10 +6,10 @@
 <body>
 <h1>Car Info</h1>
 
-<button id="submitBtn">Add Part/Service</button>
+<button id="addPartbutton">Add Part/Service</button>
 
 <div id="inputFields"></div>
-
+<button id="submitButton">Submit</button>
 <div id="car-info"></div>
 
 <script>
@@ -35,7 +35,7 @@
 
 
   // Add event listener to button
-  document.getElementById("submitBtn").addEventListener("click", function() {
+  document.getElementById("addPartbutton").addEventListener("click", function() {
     // Create two new input fields
     var partname = document.createElement("input");
     partname.type = "text";
@@ -51,17 +51,25 @@
     document.getElementById("inputFields").appendChild(partname);
     document.getElementById("inputFields").appendChild(daysno);
 
-    // Send data to PHP page using XMLHttpRequest
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "save-part.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function() {
-      if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-        console.log(this.responseText);
-      }
-    };
-    xhr.send("partname=" + partname.value + "&daysno=" + daysno.value);
   });
+    // Add event listener to Submit button
+    document.getElementById("submitButton").addEventListener("click", function() {
+      // Get the values of the input fields
+      var partname = document.querySelector('input[name="partname"]').value;
+      var daysno = document.querySelector('input[name="daysno"]').value;
+
+      // Send data to PHP page using XMLHttpRequest
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "save-part.php?id=" + carId, true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+          console.log(this.responseText);
+        }
+      };
+      xhr.send("partname=" + partname + "&daysno=" + daysno);
+    });
+
 </script>
 </body>
 </html>
