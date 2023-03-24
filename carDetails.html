@@ -30,18 +30,74 @@
         .card button:hover {
             opacity: 0.7;
         }
+        #submitButton {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
 
-<button onclick="window.location.href='new-car-form.html'">Add New Car</button>
-
+<button id="addcarbutton">Add New Car</button>
+<div id="inputcarFields"></div>
+<button id="submitButton">Submit</button>
 
 <h1>Car Catalog</h1>
 <div id="car-cards"></div>
 
+
+
 <script>
 
+    // Add event listener to button
+    document.getElementById("addcarbutton").addEventListener("click", function() {
+
+        var inputFields = document.getElementById("inputcarFields");
+        if (inputFields.innerHTML === "") {
+            // Create two new input fields
+            var carname = document.createElement("input");
+            carname.type = "text";
+            carname.name = "carname";
+            carname.placeholder = "Enter Car Name";
+
+            var carmodel = document.createElement("input");
+            carmodel.type = "text";
+            carmodel.name = "carmodel";
+            carmodel.placeholder = "Enter Car Model";
+
+            // Add input fields to the DOM
+            document.getElementById("inputcarFields").appendChild(carname);
+            document.getElementById("inputcarFields").appendChild(carmodel);
+
+            // Show the Submit button
+            document.getElementById("submitButton").style.display = "block";
+        }
+        // Remove event listener from button
+        document.getElementById("addcarbutton").removeEventListener("click", arguments.callee);
+
+    });
+    // Add event listener to Submit button
+    document.getElementById("submitButton").addEventListener("click", function() {
+        // Get the values of the input fields
+        var carname = document.querySelector('input[name="carname"]').value;
+        var carmodel = document.querySelector('input[name="carmodel"]').value;
+
+        // Send data to PHP page using XMLHttpRequest
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "insert.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
+                var message = document.createElement("p");
+                message.textContent = "Saved";
+                message.style.color = "green";
+                document.body.appendChild(message);
+                location.reload();
+            }
+        };
+        xhr.send("carname=" + carname + "&carmodel=" + carmodel);
+    });
 
     // Function to create a card element for a car record
     function createCarCard(car) {
