@@ -96,12 +96,13 @@
 <header>
 
     <h1>Car List</h1>
+    <button id="addcarbutton">Add New Car</button>
+    <div id="inputcarFields"></div>
+    <button id="submitButton">Submit</button>
 </header>
 
 <main>
-<button id="addcarbutton">Add New Car</button>
-<div id="inputcarFields"></div>
-<button id="submitButton">Submit</button>
+
 
 
 <div id="car-cards"></div>
@@ -113,12 +114,28 @@
 </footer>
 
 <script>
+    /*function deleteCar(carId) {
+        console.log(carId);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'delete_car.php', true);
 
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        console.log();
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                location.reload();
+            } else {
+                console.log('Error deleting car. Status code: ' + xhr.status);
+            }
+        };
+        xhr.send('id=' + encodeURIComponent(carId));
+    }
+*/
     // Add event listener to button
     document.getElementById("addcarbutton").addEventListener("click", function() {
 
-        var inputFields = document.getElementById("inputcarFields");
-        if (inputFields.innerHTML === "") {
+        var inputcarFields = document.getElementById("inputcarFields");
+        if (inputcarFields.innerHTML === "") {
             // Create two new input fields
             var carname = document.createElement("input");
             carname.type = "text";
@@ -146,6 +163,7 @@
         // Get the values of the input fields
         var carname = document.querySelector('input[name="carname"]').value;
         var carmodel = document.querySelector('input[name="carmodel"]').value;
+        var userID  = urlParams.get('userID');
 
         // Send data to PHP page using XMLHttpRequest
         var xhr = new XMLHttpRequest();
@@ -161,7 +179,7 @@
                 location.reload();
             }
         };
-        xhr.send("carname=" + carname + "&carmodel=" + carmodel);
+        xhr.send("carname=" + carname + "&carmodel=" + carmodel + "&userID=" + userID);
     });
 
     // Function to create a card element for a car record
@@ -190,20 +208,36 @@
         var deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
         deleteBtn.onclick = function() {
-            deleteCar(String(car.id));
+            console.log(car.id);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'delete_car.php', true);
+
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                    location.reload();
+                } else {
+                    console.log('Error deleting car. Status code: ' + xhr.status);
+                }
+            };
+            xhr.send('id=' + encodeURIComponent(car.id));
         };
         card.appendChild(deleteBtn);
 
         return card;
     }
-
+    const urlParams = new URLSearchParams(window.location.search);
+    const userID = urlParams.get('userID');
     // Function to retrieve car data from the server and display it in the card view
     function loadCars() {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'get_cars.php');
+        xhr.open('GET', `get_cars.php?userID=${userID}`, true);
         xhr.onload = function() {
             if (xhr.status === 200) {
-                var cars = JSON.parse(xhr.responseText);
+                var responseText = xhr.responseText;
+                console.log('Server response:', responseText);
+                var cars = JSON.parse(responseText);
                 var carCards = document.getElementById('car-cards');
                 carCards.innerHTML = '';
                 for (var i = 0; i < cars.length; i++) {
@@ -218,19 +252,8 @@
     }
 
     // Function to delete a car record from the database
-    function deleteCar(carId) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'delete_car.php');
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                loadCars();
-            } else {
-                console.log('Error deleting car. Status code: ' + xhr.status);
-            }
-        };
-        xhr.send('id=' + encodeURIComponent(carId));
-    }
+
+
 
     // Load car data when page is first loaded
     loadCars();

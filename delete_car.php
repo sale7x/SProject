@@ -1,8 +1,11 @@
 <?php
 
 // Get the ID of the car to be deleted from the request parameters
-$id = $_POST['id'];
-
+if (!isset($_POST['id'])) {
+    http_response_code(400);
+    echo 'Error: No car ID specified';
+    exit;
+}
 // Connect to the database
 $servername = '127.0.0.1';
 $dbname = 'carreminder';
@@ -18,11 +21,29 @@ if (!$conn) {
 
 
 
+try {
+
+
+    $id = $_POST['id'];
+
 // Prepare the SQL statement to delete the car record with the given ID
 $stmt = $conn->prepare('DELETE FROM cars WHERE id = ?');
-$stmt->bind_param('i', $id);
+$stmt->bind_param('s', $id);
 $stmt->execute();
 
-// Return a success response
-http_response_code(200);
-?>
+
+if($stmt->affected_rows > 0 ){
+    // Return a success response
+    echo $stmt->affected_rows;
+//    http_response_code(200);
+} else {
+    echo $_POST['id'];
+
+}
+
+}
+catch (Exception $exception) {
+    // Rollback transaction on error
+
+    echo 'Error deleting car: ' . $exception->getMessage();
+}

@@ -14,10 +14,11 @@ if ($conn->connect_error) {
 }
 
 // Prepare and bind statement
-$stmt = $conn->prepare("INSERT INTO cars (carname, carmodel ) VALUES (?, ?)");
-$stmt->bind_param("ss", $carname, $carmodel);
+$stmt = $conn->prepare("INSERT INTO cars (carname, carmodel, user_id) VALUES (?, ?, ?)");
+$stmt->bind_param("sss", $carname, $carmodel,$userID );
 
 // Set parameters and execute
+$userID= $_POST["userID"];
 $carname = $_POST["carname"];
 $carmodel = $_POST["carmodel"];
 
