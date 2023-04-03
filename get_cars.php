@@ -1,6 +1,6 @@
 <?php
-
-$userID = $_GET['userID'];
+include 'userSession.php';
+$userID = $_SESSION['user'];
 
 // Database connection settings
 $servername = "127.0.0.1";

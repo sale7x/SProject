@@ -1,3 +1,11 @@
+<?php
+
+include 'userSession.php';
+$userID = $_SESSION['user'];
+
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -114,23 +122,7 @@
 </footer>
 
 <script>
-    /*function deleteCar(carId) {
-        console.log(carId);
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'delete_car.php', true);
 
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        console.log();
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                location.reload();
-            } else {
-                console.log('Error deleting car. Status code: ' + xhr.status);
-            }
-        };
-        xhr.send('id=' + encodeURIComponent(carId));
-    }
-*/
     // Add event listener to button
     document.getElementById("addcarbutton").addEventListener("click", function() {
 
@@ -163,8 +155,8 @@
         // Get the values of the input fields
         var carname = document.querySelector('input[name="carname"]').value;
         var carmodel = document.querySelector('input[name="carmodel"]').value;
-        var userID  = urlParams.get('userID');
-
+        var userID  ='<?php echo $_SESSION['user']?>';
+        console.log(userID);
         // Send data to PHP page using XMLHttpRequest
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "insert.php", true);
@@ -201,7 +193,7 @@
         detailsBtn.textContent = 'Details';
         detailsBtn.onclick = function() {
             // Navigate to the car details page with the car id as a parameter
-            window.location.href = 'carinfo.html?id=' + car.id;
+            window.location.href = 'carinfo.php?id=' + car.id;
         };
         card.appendChild(detailsBtn);
 
@@ -227,12 +219,12 @@
 
         return card;
     }
-    const urlParams = new URLSearchParams(window.location.search);
-    const userID = urlParams.get('userID');
+
+
     // Function to retrieve car data from the server and display it in the card view
     function loadCars() {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', `get_cars.php?userID=${userID}`, true);
+        xhr.open('GET', `get_cars.php`, true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 var responseText = xhr.responseText;
@@ -250,8 +242,6 @@
         };
         xhr.send();
     }
-
-    // Function to delete a car record from the database
 
 
 

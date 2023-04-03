@@ -1,3 +1,11 @@
+<?php
+
+include 'userSession.php';
+
+$carId = $_GET['id'];
+?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -123,57 +131,57 @@
 
 <script>
   // Get the car id from the URL parameter
-  var urlParams = new URLSearchParams(window.location.search);
-  var carId = urlParams.get('id');
 
-  // Call an API endpoint to get the car details by id
-  fetch('get-car-byID.php?id=' + carId)
-          .then(function(response) {
-            return response.json();
+
+
+      // Call an API endpoint to get the car details by id
+      fetch('get-car-byID.php?id=' + <?php echo $carId; ?>)
+          .then(function (response) {
+              return response.json();
           })
-          .then(function(car) {
-            // Display the car details
-            var carDetails = document.getElementById('car-info');
-            carDetails.innerHTML = '<h2>' + car.carname + '</h2>' +
-                    '<p>Model: ' + car.carmodel + '</p>' ;
+          .then(function (car) {
+              // Display the car details
+              var carDetails = document.getElementById('car-info');
+              carDetails.innerHTML = '<h2>' + car.carname + '</h2>' +
+                  '<p>Model: ' + car.carmodel + '</p>';
 
-            // Call an API endpoint to get the parts for this car
-            fetch('get-parts-data.php?id=' + carId)
-                    .then(function(response) {
+              // Call an API endpoint to get the parts for this car
+              fetch('get-parts-data.php?id=' + <?php echo $carId; ?>)
+                  .then(function (response) {
                       return response.json();
-                    })
-                    .then(function(parts) {
+                  })
+                  .then(function (parts) {
                       // Display the parts for this car
                       var partsList = document.getElementById('parts-list');
                       partsList.innerHTML = '';
-                      parts.forEach(function(part) {
-                        var card = document.createElement('div');
-                        card.classList.add('card');
+                      parts.forEach(function (part) {
+                          var card = document.createElement('div');
+                          card.classList.add('card');
 
-                        var cardBody = document.createElement('div');
-                        cardBody.classList.add('card-body');
+                          var cardBody = document.createElement('div');
+                          cardBody.classList.add('card-body');
 
-                        var partname = document.createElement('h5');
-                        partname.classList.add('card-title');
-                        partname.textContent = part.partname;
+                          var partname = document.createElement('h5');
+                          partname.classList.add('card-title');
+                          partname.textContent = part.partname;
 
-                        var daysno = document.createElement('p');
-                        daysno.classList.add('card-text');
-                        daysno.textContent = 'Remind in ' + part.daysno + ' days';
+                          var daysno = document.createElement('p');
+                          daysno.classList.add('card-text');
+                          daysno.textContent = 'Remind in ' + part.daysno + ' days';
 
-                        cardBody.appendChild(partname);
-                        cardBody.appendChild(daysno);
-                        card.appendChild(cardBody);
-                        partsList.appendChild(card);
+                          cardBody.appendChild(partname);
+                          cardBody.appendChild(daysno);
+                          card.appendChild(cardBody);
+                          partsList.appendChild(card);
                       });
-                    })
-                    .catch(function(error) {
+                  })
+                  .catch(function (error) {
                       console.log(error);
-                    });
+                  });
 
           })
-          .catch(function(error) {
-            console.log(error);
+          .catch(function (error) {
+              console.log(error);
           });
 
 
@@ -212,7 +220,7 @@
 
       // Send data to PHP page using XMLHttpRequest
       var xhr = new XMLHttpRequest();
-      xhr.open("POST", "save-part.php?id=" + carId, true);
+      xhr.open("POST", "save-part.php?id=" + <?php echo $carId; ?>, true);
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       xhr.onreadystatechange = function() {
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {

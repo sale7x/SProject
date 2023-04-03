@@ -1,3 +1,10 @@
+<?php
+
+include 'userSession.php';
+
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,7 +81,7 @@
   <h1>Welcome to My Website</h1>
 </div>
 <div class="container">
-  <div class="card" onclick="location.href='carDetails.html?userID=1';">
+  <div class="card" onclick="location.href='carDetails.php?user_id=' + '<?php echo $_SESSION['user']; ?>';">
     <img src="cars.jpg" alt="Cars">
     <h2>Cars</h2>
     <p>View All Cars</p>
